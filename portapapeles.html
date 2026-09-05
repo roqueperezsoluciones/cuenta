@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Copiar datos al portapapeles</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f4f7fc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        .card {
+            background: white;
+            max-width: 520px;
+            width: 100%;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 20, 50, 0.06);
+            padding: 2rem 2rem 2.2rem;
+            transition: 0.2s;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #0b1e3a;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .badge {
+            background: #eef3fa;
+            color: #1f4f8a;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            letter-spacing: 0.3px;
+            margin-left: 0.2rem;
+        }
+        .sub {
+            color: #4a5f7a;
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 4px solid #2a7de1;
+            padding-left: 0.9rem;
+            background: #f0f5ff;
+            border-radius: 0 12px 12px 0;
+            line-height: 1.4;
+        }
+        .data-block {
+            background: #f9fbfe;
+            border-radius: 18px;
+            padding: 1.5rem 1.6rem;
+            border: 1px solid #e9edf4;
+            font-size: 1rem;
+            line-height: 1.9;
+            color: #0f1f38;
+            font-weight: 450;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
+            margin-bottom: 1.8rem;
+            word-break: break-word;
+        }
+        .data-block span {
+            display: block;
+        }
+        .data-block .label {
+            font-weight: 300;
+            color: #5b6f8c;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-top: 0.2rem;
+        }
+        .data-block .value {
+            font-weight: 500;
+            padding-bottom: 0.15rem;
+        }
+        .data-block .divider {
+            border-top: 1px dashed #dce2ec;
+            margin: 0.5rem 0 0.6rem;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+        }
+        .btn {
+            background: white;
+            border: 1px solid #d0d9e6;
+            padding: 0.8rem 1.8rem;
+            border-radius: 60px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #1a2d4a;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1 1 auto;
+            min-width: 140px;
+            background: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+        }
+        .btn-primary {
+            background: #1a3d6e;
+            border: 1px solid #1a3d6e;
+            color: white;
+            box-shadow: 0 4px 10px rgba(26, 61, 110, 0.15);
+        }
+        .btn-primary:hover {
+            background: #0f2d52;
+            border-color: #0f2d52;
+            box-shadow: 0 8px 18px rgba(26, 61, 110, 0.2);
+            transform: scale(1.01);
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+        .btn-outline:hover {
+            background: #f0f4fd;
+            border-color: #a6b9d4;
+        }
+        .btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+        .toast {
+            visibility: hidden;
+            opacity: 0;
+            background: #0f1f38;
+            color: white;
+            padding: 0.6rem 1.6rem;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 450;
+            transition: all 0.25s ease;
+            display: inline-block;
+            margin-top: 1.2rem;
+            text-align: center;
+            pointer-events: none;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .footer {
+            display: flex;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+        .footnote {
+            font-size: 0.75rem;
+            color: #6f84a2;
+            margin-top: 1.2rem;
+            text-align: center;
+            border-top: 1px solid #eef2f8;
+            padding-top: 1.2rem;
+        }
+        @media (max-width: 480px) {
+            .card { padding: 1.5rem; }
+            .data-block { padding: 1.2rem; }
+            .btn { min-width: 120px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>
+        📋 Sofía Toscano
+        <span class="badge">contacto</span>
+    </h1>
+    <div class="sub">
+        Copia los datos al portapapeles
+    </div>
+
+    <!-- Bloque de datos (el texto que se copia) -->
+    <div class="data-block" id="dataBlock">
+        <span class="value">Sofía Toscano</span>
+        <span class="value">Banco Estado</span>
+        <span class="value">Cuenta Rut 21862989</span>
+        <span class="value">Sofiatoscano18@hotmail.com</span>
+        <span class="value">Rut 21862989-K</span>
+        <div class="divider"></div>
+        <span class="value" style="font-weight: 400;">Asunto: (Cantidad Anticuchos)</span>
+        <span class="label">— datos listos para copiar —</span>
+    </div>
+
+    <!-- Botones -->
+    <div class="btn-group">
+        <button class="btn btn-primary" id="copyBtn">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Copiar todo
+        </button>
+        <button class="btn btn-outline" id="copyRawBtn">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm4 12h-4v3h-2v-3H8v-2h4V9h2v4h4v2z"/></svg>
+            Copiar texto plano
+        </button>
+    </div>
+
+    <!-- Toast / notificación -->
+    <div class="footer">
+        <div id="toastMessage" class="toast">✅ Copiado al portapapeles</div>
+    </div>
+    <div class="footnote">
+        Haz clic en cualquier botón para copiar los datos
+    </div>
+</div>
+
+<script>
+    (function() {
+        // Elementos
+        const dataBlock = document.getElementById('dataBlock');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyRawBtn = document.getElementById('copyRawBtn');
+        const toast = document.getElementById('toastMessage');
+
+        // Función para copiar texto (con fallback)
+        function copyText(text, showRaw = false) {
+            if (!text) return;
+
+            // Usar la API moderna de clipboard si está disponible
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(showRaw ? '📄 Texto plano copiado' : '✅ Datos copiados al portapapeles');
+                }).catch((err) => {
+                    // Fallback: usar método alternativo
+                    fallbackCopy(text, showRaw);
+                });
+            } else {
+                fallbackCopy(text, showRaw);
+            }
+        }
+
+        // Fallback para navegadores sin clipboard API
+        function fallbackCopy(text, showRaw) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            textarea.style.top = '0';
+            textarea.style.width = '1px';
+            textarea.style.height = '1px';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast(showRaw ? '📄 Texto plano copiado' : '✅ Datos copiados al portapapeles');
+                } else {
+                    showToast('❌ No se pudo copiar, intenta manualmente');
+                }
+            } catch (e) {
+                showToast('❌ Error al copiar');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // Mostrar notificación tipo toast
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toast._hideTimeout);
+            toast._hideTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Obtener el texto limpio del bloque (sin estilos, solo el contenido visible)
+        function getCleanTextFromBlock() {
+            // Clonamos el bloque para no afectar el DOM
+            const clone = dataBlock.cloneNode(true);
+            // Eliminamos el elemento con clase .label (el "— datos listos para copiar —")
+            const label = clone.querySelector('.label');
+            if (label) label.remove();
+            // Eliminamos el divisor (opcional, pero lo dejamos como parte del texto)
+            // pero si queremos un formato más limpio, podríamos quitarlo también.
+            // En este caso lo conservamos para mantener el formato original.
+            // Obtenemos el texto
+            let raw = clone.textContent || '';
+            // Limpiar saltos de línea excesivos y espacios
+            raw = raw.replace(/\s+/g, ' ').trim();
+            // Reconstruir con saltos de línea para mejor legibilidad
+            // Pero respetamos la estructura: cada ítem en su línea
+            // Usamos el contenido original del bloque (más fiable)
+            // Leemos el innerText del bloque original (preserva saltos de línea)
+            const originalText = dataBlock.innerText || dataBlock.textContent;
+            // Eliminamos la última línea que contiene "— datos listos para copiar —"
+            let lines = originalText.split('\n').filter(line => line.trim() !== '');
+            // Filtramos la línea que contiene "datos listos para copiar" (por si acaso)
+            lines = lines.filter(line => !line.includes('datos listos para copiar') && !line.includes('— datos listos para copiar —'));
+            // Unir con saltos de línea
+            return lines.join('\n').trim();
+        }
+
+        // Copiar todo (con formato del bloque)
+        copyBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Obtenemos el texto completo (con formato de líneas)
+            const textToCopy = getCleanTextFromBlock();
+            copyText(textToCopy, false);
+        });
+
+        // Copiar texto plano (mismo contenido pero sin formato adicional)
+        copyRawBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Usamos el mismo texto, pero lo mostramos como "texto plano"
+            const textToCopy = getCleanTextFromBlock();
+            copyText(textToCopy, true);
+        });
+
+        // Extra: también se puede copiar haciendo clic en el bloque (opcional)
+        // pero lo dejamos solo con botones para evitar confusiones.
+    })();
+</script>
+
+</body>
+</html>
