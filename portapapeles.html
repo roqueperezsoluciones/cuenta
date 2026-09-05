@@ -199,6 +199,8 @@
         <span class="value">Cuenta Rut 21862989</span>
         <span class="value">Sofiatoscano18@hotmail.com</span>
         <span class="value">Rut 21862989-K</span>
+        
+        <span class="label">— datos listos para copiar —</span>
     </div>
 
     <!-- Botones -->
@@ -304,10 +306,13 @@
             // Usamos el contenido original del bloque (más fiable)
             // Leemos el innerText del bloque original (preserva saltos de línea)
             const originalText = dataBlock.innerText || dataBlock.textContent;
-            // Eliminamos la última línea que contiene "— datos listos para copiar —"
+            // Eliminamos la última línea que contiene "— datos listos para copiar —" y cualquier "Asunto"
             let lines = originalText.split('\n').filter(line => line.trim() !== '');
-            // Filtramos la línea que contiene "datos listos para copiar" (por si acaso)
-            lines = lines.filter(line => !line.includes('datos listos para copiar') && !line.includes('— datos listos para copiar —'));
+            // Filtramos líneas no deseadas: etiqueta de ayuda y cualquier línea que contenga 'asunto'
+            lines = lines.filter(line => {
+                const l = line.trim().toLowerCase();
+                return !l.includes('datos listos para copiar') && !l.includes('— datos listos para copiar —') && !l.startsWith('asunto') && !l.includes('asunto:');
+            });
             // Unir con saltos de línea
             return lines.join('\n').trim();
         }
